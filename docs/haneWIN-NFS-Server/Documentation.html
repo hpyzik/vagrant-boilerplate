@@ -1,0 +1,349 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0040)https://www.hanewin.net/doc/nfs/nfsd.htm -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+   
+   <title>haneWIN NFS Server Documentation</title>
+</head>
+<body bgcolor="#FFFFFF">
+
+<table width="90%" align="center" bgcolor="#f8f8c8">
+<tbody><tr>
+<td align="left" width="20%">
+<b>
+<a href="https://www.hanewin.net/doc/nfs/nfsd.htm#Overview">Overview</a><br>
+<a href="https://www.hanewin.net/doc/nfs/nfsd.htm#Installation">Installation</a><br>
+<a href="https://www.hanewin.net/doc/nfs/nfsd.htm#Implementation">Implementation</a><br>
+<a href="https://www.hanewin.net/doc/nfs/nfsd.htm#Users">Users Guide</a><br>
+<a href="https://www.hanewin.net/doc/nfs/nfsd.htm#Client">Client</a><br>
+<a href="https://www.hanewin.net/doc/nfs/nfsd.htm#Support">Support</a>
+</b>
+</td>
+
+<td align="center" width="60%">
+<h2 align="center"><font color="#ff0000">
+haneWIN NFS Server
+<br>
+Version 1.2
+</font></h2>
+<p align="center">
+Copyright 2002-2016, Herbert Hanewinkel, Neuried
+</p>
+</td>
+
+<td align="right" width="20%">
+Updated:<br>Dec 2015</td>
+</tr></tbody></table>
+
+<blockquote>
+<h3 align="center">
+<a name="Overview"></a>Overview
+</h3>
+
+<p align="justify">
+This software implements a <b>NFS Server</b> based on
+RFC 1813 (NFS 3 Protocol), RFC 1094 (NFS 2 Protocol) 
+and RFC 2055 (WebNFS Protocol).
+A SunRPC PortMap Daemon is implemented as a separate service to allow
+the use of the NFS server also with other PortMap implementations.
+</p>
+
+<p align="justify">
+NFS server and PortMap daemon are implemented as Windows XP/VISTA/20xx/7/8/10
+services for background operation.
+<br>
+A Control Panel applet is implemented for configuring and controlling
+the operation of the NFS Server.
+</p>
+
+<p align="justify">
+The NFS Server can also be started as an application with
+optionally built-in PortMap daemon.
+</p>
+
+<p align="justify">
+The software is implemented as 32- and 64 Bit versions.
+</p>
+
+<hr>
+<h3 align="center">
+<a name="Installation"></a>Installation
+</h3>
+
+<dl>
+<dt>
+<b>Requirements</b></dt>
+
+<dd>
+<p align="justify">
+Computer with Windows XP/VISTA/20xx/7/8/10. The NFS Server as application
+can also be used on Windows 9x/ME</p>
+</dd>
+
+<dt><b>Installation of the NFS server on Windows XP/VISTA/20xx/7/8/10</b></dt>
+<dd>
+<p align="justify">
+</p><ol>
+<li>Install the software by running the setup.</li>
+<li>Enable PortMap Daemon and NFS server in firewall for incoing requests.
+    An example is given in file firewall.bat</li>
+<li>With the control panel applet <b>NFS Server</b>
+    you can configure and monitor the service.
+    Administrator rights are required to change setting 
+    from the applet.</li>
+<li>Create an <b>exports</b> file with the directories you
+    want to access from NFS clients. (The format of the exports
+    file is the same as on Unix. Details are specified below.)
+</li><li>Use <b>Install NFS Server service</b> from the start menu
+    to install and start the server</li>
+</ol>
+<p></p>
+</dd>
+
+<dt><b>Installation of the NFS server on Windows 9x/ME</b></dt>
+<dd>
+<p align="justify">
+</p><ol>
+<li>Install the software by running the setup.</li>
+<li>Use <b>NFS Server</b> from the start menu to start the server.</li>
+<li>Create an <b>exports</b> file with the directories you
+    want to access from NFS clients. (The format of the exports
+    file is the same as on Unix. Details are specified below.)
+</li><li>Restart the <b>NFS Server</b> to activate the new exports
+    configuration.</li>
+</ol>
+<p></p>
+</dd>
+</dl>
+
+<hr>
+<h3 align="center">
+<a name="Implementation"></a>Implementation
+</h3>
+<p align="justify">
+The reason for this implementation was not to set up yet another way of networking
+for Windows computers, but to give Unix systems with basic networking capabilities
+an easy way to access volumes connected to a Windows computer, providing disc space,
+CD/DVD access and data sharing for Unix systems. 
+<br>
+Because the server supports hard links, soft links and special devices, it can
+be used to run <b>diskless unix clients completly from a Windows volume</b>.
+</p>
+
+<p align="justify">
+The <b>exports</b> file uses the same format as on Unix.
+Directories must follow the Windows notation starting with a drive
+specification, e.g. C:\unix
+</p>
+
+<p align="justify">
+The following options are supported:
+<table>
+<tbody><tr><td valign="top"><tt>-name:&lt;sharename&gt;</tt></td>
+<td>assigns a name to the exported path as an alternate name for mounting.</td></tr>
+<tr><td valign="top"><tt>-alldirs</tt></td>
+<td>allows the host(s) to mount at any point within the filesystem.</td></tr>
+<tr><td valign="top"><tt>-umask:&lt;mask&gt;</tt></td>
+<td>set the umask for group and world permissions on the filesystem, default 022</td></tr>
+<tr><td valign="top"><tt>-readonly</tt></td>
+<td>limits access to reading</td></tr>
+<tr><td valign="top"><tt>-public</tt></td>
+<td>Enables WebNFS access.</td></tr>
+<tr><td valign="top"><tt>-lowercase</tt></td>
+<td>maps all file names to lowercase, otherwise case is preserved.</td></tr>
+<tr><td valign="top"><tt>-exec</tt></td>
+<td>forces in access rights the x bit for all files.</td></tr>
+<tr><td valign="top"><nobr><tt>-mapall:&lt;uid&gt;[:&lt;gid&gt;]</tt></nobr></td>
+<td>all Unix user-ids and group-ids are mapped to the specified user-id and group-id.</td></tr>
+<tr><td valign="top"><nobr><tt>-maproot:&lt;uid&gt;[:&lt;gid&gt;]</tt></nobr></td>
+<td>the Unix super user <b>root</b> is mapped to the specified user-id, group-id.
+Without a mapping entry <b>root</b> will be mapped to user and group <b>nobody</b>.</td></tr> 
+<tr><td valign="top"><tt>-range</tt></td>
+<td>IP adresses are interpreted in pairs as from-to ranges enabling
+client access from all addresses in a range (more flexible than the unix -net -mask options).</td></tr>
+</tbody></table>
+</p><p align="justify">
+To export a directory name containing spaces put the path name in quotes.<br>
+e.g. c:"\my files" ...
+</p>
+<p align="justify">
+A directory can be specified more than once for different clients.
+</p>
+
+<p align="justify">
+On the client side use standard Unix notation for mounting
+drives and directories:<br>
+<tt>C: --&gt; /c</tt><br>
+<tt>D:\nfs --&gt; /d/nfs</tt><br>
+e.g.: Directory <tt><b>D:\nfs</b></tt> is mounted on <tt><b>/mnt/nfs</b></tt>.<br>
+<tt>mount -t nfs 192.168.1.4:/d/nfs /mnt/nfs</tt>
+</p>
+
+<p align="justify">
+For mounting Windows remote network shares enable the "Allow mount of remote devices" option
+on ther server tab and use the following notation:<br>
+<tt>\\server\share --&gt; //server/share</tt><br>
+e.g.: Directory <tt><b>\\amilo\nfs</b></tt> is mounted on <tt><b>/mnt/nfs</b></tt>.<br>
+<tt>mount -t nfs 192.168.1.4://amilo/nfs /mnt/nfs</tt>
+</p>
+ 
+<p align="justify">
+With the <b>-name</b> option a share name can be assigned to an exported Windows path:<br> 
+e.g..: Windows path <tt><b>D:\OwnFiles\music\mp3</b></tt> is exported with option <b>-name:mp3</b>.<br>
+It is mounted under Unix with the command<br>
+<tt>mount -t nfs 192.168.1.4:/mp3 ...</tt><br>
+The real Windows path is invisible for the Unix user.
+</p>
+
+<p align="justify">
+The unix user is returned as the owner of the Windows files. Owner access rights
+are set based on the Windows permission bits <b>readonly</b> and <b>hidden</b>. 
+The Windows file system <b>hidden</b> attribute is used by the NFS server
+to mark unix files as executable.
+For unix group and world access rights a default mask of 022 is applied to the
+owner access rights. The mask is configurable per filesystem using the -umask exports option.
+</p>
+
+<p align="justify">
+Special files and properties, like Unix soft links and the SUID bit are marked
+by the <b>system</b> attribute.
+Unix hard links are supported on 200x/XP/Vista/7 NTFS volumes. For non NTFS volumes
+and elder Windows releases a hard link can be emulated by creating a copy of the file.
+<br>
+NFS requires the Unix inodes for indexing files on a file system. 
+The NFS server creates its own inode table in a file called
+<b>inodes.nfs</b> (created in the NFS server software directory or 
+in the directory specified by registry key InodePath).
+Because inodes must be created for all files accessed via NFS, depending
+on the volumes and files on the server the file can grow to
+some MBytes in size.
+</p>
+
+<p align="justify">
+The NFS Server operates multithreaded. For TCP connections a thread is created
+per client. For UDP the configured number of threads is created to handle
+concurrent access from clients.
+</p>
+
+<p align="justify">
+Linux clients create a temporary file with no access bits set and try
+to write to the file. Because with fails on Windows you can force the server
+to use the default access in this case. The behaviour was not observed for
+NetBSD/FreeBSD clients.
+</p>
+
+<p align="justify">
+For UDP connected clients the server can be restarted without remounting
+at the client. Unmodified entries in the exports list are also still valid
+without remount after restarting the server.
+</p>
+
+<hr>
+<h3 align="center">
+<a name="Users"></a>Users Guide
+</h3>
+
+<p>
+The Info Box at startup of the Control Panel is displayed only for the
+unregistered version.
+</p>
+
+<h4>Running the NFS server on Windows 9x/ME</h4>
+<p>To use the software as application on Windows 9x/ME run
+<br>
+<tt><b>nfssrv.exe</b></tt>
+</p>
+Use the tray icon menu to configure or terminate the NFS Server.
+
+<h4>
+Running the NFS server as a Service on Windows  XP/VISTA/20xx/7/8/10
+</h4> 
+
+PortMap Daemon and NFS Server are implemented as services for
+background operation. The entries created in the start menu
+execute the following commands.
+<p align="justify">
+</p><ol>
+<li>The PortMap Daemon is installed and started by the command:
+<br>
+<tt><b>PMAPD -install</b></tt>
+<br>
+The service can be started and stopped manually by the service control panel.</li>
+
+<li>The NFS Server service is installed and started by the command:
+<br>
+<tt><b>NFSD -install PMAPDaemon</b></tt>
+<br>
+The service depends on the service PMAPDaemon. If you use
+a Portmapper from another vendor use their service name for the portmapper.
+If no service name is specifed no dependency check is applied.
+<br>
+The service can be started and stopped manually by the service control panel.</li>
+<li>Run
+<br>
+<tt><b>PMAPD -remove</b></tt>
+<br>or<br>
+<tt><b>NFSD -remove</b></tt>
+<br>
+to stop and remove the PortMap daemon or NFS server service.
+</li>
+</ol>
+<p></p>
+
+<h4>The NFS Server control panel</h4>
+<p align="center">
+<img src="Documentation_files/nfsd1.gif">
+
+
+</p><dl>
+<dt><b>Register</b></dt>
+<dd>
+<div align="justify">
+prompts for the license key and your name, company. Check the Info menu
+    to find out if the license information was accepted.
+</div>
+</dd>
+
+<dt><b>About...</b></dt>
+<dd>displays program version information.</dd>
+
+<dt><b>Help</b></dt>
+<dd>starts a HTML browser displaying the manual.</dd>
+</dl>
+
+<dt><b>Server</b></dt>
+<dd>optional Server configuration</dd>
+<p align="center">
+<img src="Documentation_files/server.gif">
+</p>
+
+<dt><b>Exports</b></dt>
+<dd>lists exported folders and allows editing of the exports table.
+Exported folders are stored in unix style <b>exports</b> file.</dd>
+<p align="center">
+<img src="Documentation_files/exports.gif">
+</p>
+
+<dt><b>Portmapper</b></dt>
+<dd>displays RPC programs registered with the SunRPC PortMap daemon.</dd>
+<p align="center">
+<img src="Documentation_files/portmap.gif">
+</p>
+
+<hr>
+<h3 align="center">
+<a name="Support"></a>Support
+</h3>
+
+The latest version is available on
+<a href="http://www.hanewin.net/">www.hanewin.net</a>.
+Please mail comments, questions, problems to
+<script type="text/javascript">
+<!-- 
+var a = '@'; var u='mail'; var d = u+a+'hanewin.net'; 
+document.write('<a href=\"'+u+'to:'+d+'\">'+d+'</a>');
+// -->
+</script><a href="mailto:mail@hanewin.net">mail@hanewin.net</a>.
+</blockquote>
+
+
+</body></html>
