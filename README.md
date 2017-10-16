@@ -1,3 +1,4 @@
+
 #Boilerplate for Vagrant virtual machines
 
 ## Requirements

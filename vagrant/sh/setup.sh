@@ -10,5 +10,5 @@ function install_setup()
 
 function set_up_home_directory()
 {
-    grep "cd /vagrant" /home/ubuntu/.bashrc || echo "cd /vagrant" >> /home/ubuntu/.bashrc
+    grep "cd /vagrant" /home/vagrant/.bashrc || echo "cd /vagrant" >> /home/vagrant/.bashrc
 }
